@@ -1,8 +1,6 @@
 import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 /**
  * Created by aarikan on 18/10/15.
@@ -15,9 +13,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         System.out.println("Hello, World!");
-        //readStopwords();
+        readStopwords();
         readArticles();
-
+        System.out.println(articles.get(19855));
+        System.out.println("tokenized: " + deleteStopWords(tokenize(articles.get(19855))));
     }
 
     /*
@@ -28,7 +27,6 @@ public class Main {
         String str;
         while ((str = read.readLine()) != null) {
             stopWords.add(str);
-            System.out.println(str);
         }
         read.close();
     }
@@ -45,16 +43,23 @@ public class Main {
             BufferedReader read = new BufferedReader(new FileReader(new File(filepath)));
             String str;
             while ((str = read.readLine()) != null) {
-                if (str.contains("<TEXT")) {
+                if (str.contains("<REUTERS")) {
                     String article = str + " ";
+                    String tobeIndexed = "";
                     String fileLine;
                     while ((fileLine = read.readLine()) != null) {
                         article += fileLine + " ";
-                        if (fileLine.contains("</TEXT>")) {
-                            if(article.indexOf("</BODY") == -1) {
-                                System.out.println(article);
+                        if (fileLine.contains("</REUTERS>")) { // end of the article
+                            if (article.contains("</BODY>")) { // article has a body tag, normal case
+                                //there's no case where an article has a body tag but not a title tag
+                                tobeIndexed = article.substring(article.indexOf("<TITLE>") + 7, article.indexOf("</TITLE>")) + " ";
+                                tobeIndexed += article.substring(article.indexOf("<BODY>") + 6, article.indexOf("</BODY>"));
+                            } else if (article.contains("</TITLE>")) { // article has a title tag, but not a body tag
+                                tobeIndexed = article.substring(article.indexOf("<TITLE>") + 7, article.indexOf("</TITLE>"));
+                            } else { // no body neither title tag
+                                tobeIndexed = article.substring(article.indexOf("<TEXT TYPE=\"UNPROC\">&#2;") + 24, article.indexOf("</TEXT>"));
                             }
-                            //articles.put(index, article.substring(article.indexOf("<BODY") + 6, article.indexOf("</BODY")));
+                            articles.put(index, tobeIndexed);
                             index++;
                             break;
                         }
@@ -84,14 +89,16 @@ public class Main {
                 bigBuilder.append(active);
                 bigBuilder.append(" ");
             } catch (Exception e) {  // so this is not a double value
-                String activeTemp = active.replace(',', '.');
+                String activeTemp = active.replace(',', '.'); //try again
                 try {
                     double x = Double.parseDouble(activeTemp);
                     bigBuilder.append(activeTemp);
                     bigBuilder.append(" ");
 
                 } catch (Exception e1) {
-
+                    if (active.contains("&lt;")) { // handle words including this
+                        active = active.substring(0, active.indexOf("&lt;")) + active.substring(active.indexOf("&lt;") + 3);
+                    }
                     for (int j = 0; j < active.length(); j++) {
                         if (Character.isDigit(active.charAt(j)) || Character.isLetter(active.charAt(j))) {
                             stringBuilder.append(active.charAt(j));
@@ -107,5 +114,14 @@ public class Main {
 
     }
 
-
+    public static String deleteStopWords(String article) {
+        String[] tokens = article.split(" ");
+        String newArticle = "";
+        for (int i = 0; i < tokens.length; i++) {
+            if (!stopWords.contains(tokens[i])) {
+                newArticle += tokens[i] + " ";
+            }
+        }
+        return newArticle;
+    }
 }
