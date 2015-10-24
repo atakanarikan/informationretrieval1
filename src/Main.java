@@ -13,9 +13,20 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         System.out.println("Hello, World!");
+        Stemmer stemmer = new Stemmer();
+        stemmer.add('c');
+        stemmer.add('o');
+        stemmer.add('n');
+        stemmer.add('n');
+        stemmer.add('e');
+        stemmer.add('c');
+        stemmer.add('t');
+        stemmer.add('e');
+        stemmer.add('d');
+        stemmer.stem();
+        System.out.println(stemmer.toString());
         readStopwords();
         readArticles();
-        System.out.println(articles.get(19855));
         System.out.println("tokenized: " + deleteStopWords(tokenize(articles.get(19855))));
     }
 
@@ -114,6 +125,9 @@ public class Main {
 
     }
 
+    /*
+    deletes the stop words from the given string.
+     */
     public static String deleteStopWords(String article) {
         String[] tokens = article.split(" ");
         String newArticle = "";
