@@ -1,6 +1,5 @@
 import java.io.*;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Created by aarikan on 18/10/15.
@@ -12,11 +11,36 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         System.out.println("Hello, World!");
+        System.out.print("Processing the stopwords... ");
         readStopwords();
+        System.out.println("Done!");
+        System.out.print("Processing the articles (This might take up to a minute)... ");
         readArticles();
-        System.out.println("invertedIndex: " + invertedIndex.size());
-        System.out.println("wordFrequency: " + wordFrequency.size());
-        System.out.println("HOHO: " + processAnd("dsfgkljhsdfgdfsıuyghfdsı"));
+        System.out.println("Done!");
+        Scanner scan = new Scanner(System.in);
+        String userQuery = "";
+        while(true){
+            System.out.println("Please enter your query(Enter \"q\" for terminating the program) : ");
+            userQuery = scan.nextLine();
+            if(userQuery.toLowerCase().equals("q")) {
+                break;
+            }
+            String queryType = "and"; // our default query is and
+            String[] query = userQuery.split(" ");
+            for(int i = 0; i < query.length; i++){
+                if(query[i].toLowerCase().equals("or")){
+                    queryType = "or";
+                    break;
+                }
+            }
+            if(queryType.equals("or")){
+                System.out.println("Matched articles: " + processOr(userQuery));
+            }
+            else {
+                System.out.println("Matched articles: " + processAnd(userQuery));
+            }
+        }
+        scan.close();
         System.out.println("Goodbye, Cruel World!");
     }
 
@@ -64,10 +88,10 @@ public class Main {
                             for (int j = 0; j < tokens.length; j++) {
                                 if (!tokens[j].equals("") && !tokens[j].equals(" ") && tokens[j].length() > 1) {
                                     if (invertedIndex.keySet().contains(tokens[j])) { // we've seen this token before.
-                                        int newFreq = wordFrequency.get(tokens[j]) + 1;
-                                        wordFrequency.put(tokens[j], newFreq);
                                         if (!invertedIndex.get(tokens[j]).contains("" + index)) { // we don't want to have the same file id appearing more than once in the postings list.
                                             invertedIndex.put(tokens[j], invertedIndex.get(tokens[j]) + "," + index);
+                                            int newFreq = wordFrequency.get(tokens[j]) + 1;
+                                            wordFrequency.put(tokens[j], newFreq);
                                         }
                                     } else { // first time we're seeing this token
                                         invertedIndex.put(tokens[j], "" + index);
@@ -170,16 +194,19 @@ public class Main {
     for the 3rd case, first processes "A AND B" then "result(A, B) AND C" and so forth.
      */
     public static String processAnd(String userQuery) {
+        if (!correctQuery(userQuery)) { // there's an unknown word in the query, there's no point in processing.
+            return "None!";
+        }
         String[] query = stemmed(deleteStopWords(tokenize(userQuery))).split(" "); // this will get rid of the AND's in the query
         String result;
         int index = 0;
         if (query.length == 1) {
             if (invertedIndex.get(query[index]) != null) return invertedIndex.get(query[index]); // only 1 word query
-            return "-1";
+            return "None!";
         } else if (query.length == 2) {
             result = and2Postings(invertedIndex.get(query[0]).split(","), invertedIndex.get(query[1]).split(","));
             if (result.equals("$$$$EMPTYRESULT$$$$")) {
-                return "-1";
+                return "None!";
             }
         } else {
             String temp = "";
@@ -187,12 +214,12 @@ public class Main {
                 if (i == 0) {
                     temp = and2Postings(invertedIndex.get(query[i]).split(","), invertedIndex.get(query[i + 1]).split(","));
                     if (temp.equals("$$$$EMPTYRESULT$$$$")) { // once a couple returns empty, all the query will return empty
-                        return "-1";
+                        return "None!";
                     }
                 } else {
                     temp = and2Postings(temp.split(","), invertedIndex.get(query[i + 1]).split(","));
                     if (temp.equals("$$$$EMPTYRESULT$$$$")) { // once a couple returns empty, all the query will return empty
-                        return "-1";
+                        return "None!";
                     }
                 }
             }
@@ -225,5 +252,64 @@ public class Main {
             return result.substring(0, result.length() - 1); // post-fence
         }
         return "$$$$EMPTYRESULT$$$$";
+    }
+
+    public static String processOr(String userQuery) {
+        String[] query = stemmed(deleteStopWords(tokenize(userQuery))).split(" "); // this will get rid of the OR's in the query
+        String x = "";
+        if(!correctQuery(userQuery)) { // an unknown word is in the query, just get rid of it from the query since it won't have any effect
+            for(int i= 0; i < query.length; i++) {
+                if(invertedIndex.get(query[i]) != null && invertedIndex.containsKey(query[i])){
+                    x += query[i] + " ";
+                }
+            }
+        }
+        query = x.split(" ");
+        String result;
+        int index = 0;
+        if (query.length == 1) {
+            if (invertedIndex.get(query[index]) != null) return invertedIndex.get(query[index]); // only 1 word query
+            return "None!";
+        } else if (query.length == 2) {
+            result = or2Postings(invertedIndex.get(query[0]).split(","), invertedIndex.get(query[1]).split(","));
+        } else {
+            String temp = "";
+            for (int i = 0; i < query.length - 1; i++) {
+                if (i == 0) {
+                    temp = or2Postings(invertedIndex.get(query[i]).split(","), invertedIndex.get(query[i + 1]).split(","));
+                } else {
+                    temp = or2Postings(temp.split(","), invertedIndex.get(query[i + 1]).split(","));
+                }
+            }
+            result = temp;
+        }
+        return result;
+    }
+
+    public static String or2Postings(String[] pl1, String[] pl2) {
+        TreeSet<Integer> mySet = new TreeSet<Integer>();
+        String result = "";
+        for(int i = 0; i < pl1.length; i++){
+            mySet.add(Integer.parseInt(pl1[i]));
+        }
+        for(int i = 0; i < pl2.length; i++){
+            mySet.add(Integer.parseInt(pl2[i]));
+        }
+        Iterator itr = mySet.iterator();
+        while(itr.hasNext()){
+            result += itr.next() + ",";
+        }
+        if(result.length() > 0) return result.substring(0, result.length()-1);
+        return "";
+    }
+
+    public static boolean correctQuery(String userQuery){
+        String[] query = stemmed(deleteStopWords(tokenize(userQuery))).split(" ");
+        for(int i = 0; i < query.length; i++) {
+            if(!invertedIndex.containsKey(query[i]) || invertedIndex.get(query[i]) == null) {
+                return false;
+            }
+        }
+        return true;
     }
 }
