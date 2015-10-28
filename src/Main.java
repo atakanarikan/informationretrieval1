@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -7,27 +8,20 @@ import java.util.HashSet;
  */
 public class Main {
     static HashSet<String> stopWords = new HashSet<String>();
-    static HashMap<Integer, String> articles = new HashMap<Integer, String>();
+//    static HashMap<Integer, String> articles = new HashMap<Integer, String>();
     static HashMap<String, String> invertedIndex = new HashMap<String, String>();
-    static HashSet<Character> lettersAndDigits = new HashSet<Character>();
+    static HashMap<String, Integer> wordFrequency = new HashMap<String, Integer>();
 
     public static void main(String[] args) throws IOException {
         System.out.println("Hello, World!");
-        Stemmer stemmer = new Stemmer();
-        stemmer.add('c');
-        stemmer.add('o');
-        stemmer.add('n');
-        stemmer.add('n');
-        stemmer.add('e');
-        stemmer.add('c');
-        stemmer.add('t');
-        stemmer.add('e');
-        stemmer.add('d');
-        stemmer.stem();
-        System.out.println(stemmer.toString());
         readStopwords();
         readArticles();
-        System.out.println("tokenized: " + deleteStopWords(tokenize(articles.get(19855))));
+    //    System.out.println("Articles: " + articles.size());
+        System.out.println("invertedIndex: " + invertedIndex.size());
+        System.out.println("wordFrequency: " + wordFrequency.size());
+        System.out.println("actual: " + invertedIndex.get(stemmed(deleteStopWords(tokenize("World"))).split(" ")[0]));
+        System.out.println("result: " + processAnd("World"));
+        System.out.println("Goodbye, Cruel World!");
     }
 
     /*
@@ -70,7 +64,23 @@ public class Main {
                             } else { // no body neither title tag
                                 tobeIndexed = article.substring(article.indexOf("<TEXT TYPE=\"UNPROC\">&#2;") + 24, article.indexOf("</TEXT>"));
                             }
-                            articles.put(index, tobeIndexed);
+                            String[] tokens = stemmed(deleteStopWords(tokenize(tobeIndexed))).split(" ");
+                            for (int j = 0; j < tokens.length; j++) {
+                                if(!tokens[j].equals("") && !tokens[j].equals(" ") && tokens[j].length() > 1) {
+                                    if (invertedIndex.keySet().contains(tokens[j])) { // we've seen this token before.
+                                        int newFreq = wordFrequency.get(tokens[j]) + 1;
+                                        wordFrequency.put(tokens[j], newFreq);
+                                        if(!invertedIndex.get(tokens[j]).contains(""+index)){ // we don't want to have the same file id appearing more than once in the postings list.
+                                            invertedIndex.put(tokens[j], invertedIndex.get(tokens[j]) + "," + index);
+                                        }
+                                    }
+                                    else { // first time we're seeing this token
+                                        invertedIndex.put(tokens[j], "" + index);
+                                        wordFrequency.put(tokens[j], 1);
+                                    }
+                                }
+                            }
+                       //     articles.put(index, article);
                             index++;
                             break;
                         }
@@ -86,7 +96,7 @@ public class Main {
     gets rid of the words containing all nonword characters.
     gets rid of the nonword characters at the beginning of a word.
     gets rid of the nonword characters at the end of a word.
-    gets rid of any nonword character in a word (excluding digits) // 19.2 or 16,3 will pass, whereas It's okay will be its okay
+    gets rid of any nonword character in a word (excluding digits) // 19.2 or 16,3 will pass, whereas "It's okay" will be "its okay"
      */
     public static String tokenize(String line) {
         String[] prettyTokens = line.toLowerCase().split(" "); // split the lowercase string by whitespace
@@ -94,7 +104,11 @@ public class Main {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < prettyTokens.length; i++) {
             String active = prettyTokens[i];
-
+            if(active.length() > 0) { // parseDouble thinks "1980." a double. avoid that.
+                if(!Character.isDigit(active.charAt(active.length()-1)) && !Character.isLetter(active.charAt(active.length()-1))){
+                    active = active.substring(0, active.length()-1);
+                }
+            }
             try {
                 double x = Double.parseDouble(active);
                 bigBuilder.append(active);
@@ -137,5 +151,36 @@ public class Main {
             }
         }
         return newArticle;
+    }
+
+    /*
+    takes a line as an argument, returns the stemmed version.
+     */
+    public static String stemmed(String str) {
+        Stemmer stemmer = new Stemmer();
+        String[] words = str.split(" ");
+        String result = "";
+        for (int j = 0; j < words.length; j++) {
+            for (int i = 0; i < words[j].length(); i++) {
+                stemmer.add(words[j].charAt(i));
+            }
+            stemmer.stem();
+            result += stemmer.toString() + " ";
+        }
+        return result;
+    }
+
+    public static String processAnd(String userQuery){
+        String[] query = stemmed(deleteStopWords(tokenize(userQuery))).split(" ");
+        for (int i=0; i<query.length; i++) {
+
+            if(query.length == 1 && invertedIndex.get(query[i]) != null){
+                System.out.println("XD: " + query[i]);
+                return invertedIndex.get(query[i]); // only 1 word query
+            }
+
+        }
+        // no match found
+        return "No match were found!\n";
     }
 }
