@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -8,7 +7,6 @@ import java.util.HashSet;
  */
 public class Main {
     static HashSet<String> stopWords = new HashSet<String>();
-//    static HashMap<Integer, String> articles = new HashMap<Integer, String>();
     static HashMap<String, String> invertedIndex = new HashMap<String, String>();
     static HashMap<String, Integer> wordFrequency = new HashMap<String, Integer>();
 
@@ -16,11 +14,9 @@ public class Main {
         System.out.println("Hello, World!");
         readStopwords();
         readArticles();
-    //    System.out.println("Articles: " + articles.size());
         System.out.println("invertedIndex: " + invertedIndex.size());
         System.out.println("wordFrequency: " + wordFrequency.size());
-        System.out.println("actual: " + invertedIndex.get(stemmed(deleteStopWords(tokenize("World"))).split(" ")[0]));
-        System.out.println("result: " + processAnd("World"));
+        System.out.println("HOHO: " + processAnd("dsfgkljhsdfgdfsıuyghfdsı"));
         System.out.println("Goodbye, Cruel World!");
     }
 
@@ -66,21 +62,19 @@ public class Main {
                             }
                             String[] tokens = stemmed(deleteStopWords(tokenize(tobeIndexed))).split(" ");
                             for (int j = 0; j < tokens.length; j++) {
-                                if(!tokens[j].equals("") && !tokens[j].equals(" ") && tokens[j].length() > 1) {
+                                if (!tokens[j].equals("") && !tokens[j].equals(" ") && tokens[j].length() > 1) {
                                     if (invertedIndex.keySet().contains(tokens[j])) { // we've seen this token before.
                                         int newFreq = wordFrequency.get(tokens[j]) + 1;
                                         wordFrequency.put(tokens[j], newFreq);
-                                        if(!invertedIndex.get(tokens[j]).contains(""+index)){ // we don't want to have the same file id appearing more than once in the postings list.
+                                        if (!invertedIndex.get(tokens[j]).contains("" + index)) { // we don't want to have the same file id appearing more than once in the postings list.
                                             invertedIndex.put(tokens[j], invertedIndex.get(tokens[j]) + "," + index);
                                         }
-                                    }
-                                    else { // first time we're seeing this token
+                                    } else { // first time we're seeing this token
                                         invertedIndex.put(tokens[j], "" + index);
                                         wordFrequency.put(tokens[j], 1);
                                     }
                                 }
                             }
-                       //     articles.put(index, article);
                             index++;
                             break;
                         }
@@ -104,9 +98,9 @@ public class Main {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < prettyTokens.length; i++) {
             String active = prettyTokens[i];
-            if(active.length() > 0) { // parseDouble thinks "1980." a double. avoid that.
-                if(!Character.isDigit(active.charAt(active.length()-1)) && !Character.isLetter(active.charAt(active.length()-1))){
-                    active = active.substring(0, active.length()-1);
+            if (active.length() > 0) { // parseDouble thinks "1980." a double. avoid that.
+                if (!Character.isDigit(active.charAt(active.length() - 1)) && !Character.isLetter(active.charAt(active.length() - 1))) {
+                    active = active.substring(0, active.length() - 1);
                 }
             }
             try {
@@ -170,17 +164,66 @@ public class Main {
         return result;
     }
 
-    public static String processAnd(String userQuery){
-        String[] query = stemmed(deleteStopWords(tokenize(userQuery))).split(" ");
-        for (int i=0; i<query.length; i++) {
-
-            if(query.length == 1 && invertedIndex.get(query[i]) != null){
-                System.out.println("XD: " + query[i]);
-                return invertedIndex.get(query[i]); // only 1 word query
+    /*
+    processes the and query given by the user.
+    there are 3 cases: "A", "A AND B", "A AND B AND C AND ..."
+    for the 3rd case, first processes "A AND B" then "result(A, B) AND C" and so forth.
+     */
+    public static String processAnd(String userQuery) {
+        String[] query = stemmed(deleteStopWords(tokenize(userQuery))).split(" "); // this will get rid of the AND's in the query
+        String result;
+        int index = 0;
+        if (query.length == 1) {
+            if (invertedIndex.get(query[index]) != null) return invertedIndex.get(query[index]); // only 1 word query
+            return "-1";
+        } else if (query.length == 2) {
+            result = and2Postings(invertedIndex.get(query[0]).split(","), invertedIndex.get(query[1]).split(","));
+            if (result.equals("$$$$EMPTYRESULT$$$$")) {
+                return "-1";
             }
-
+        } else {
+            String temp = "";
+            for (int i = 0; i < query.length - 1; i++) {
+                if (i == 0) {
+                    temp = and2Postings(invertedIndex.get(query[i]).split(","), invertedIndex.get(query[i + 1]).split(","));
+                    if (temp.equals("$$$$EMPTYRESULT$$$$")) { // once a couple returns empty, all the query will return empty
+                        return "-1";
+                    }
+                } else {
+                    temp = and2Postings(temp.split(","), invertedIndex.get(query[i + 1]).split(","));
+                    if (temp.equals("$$$$EMPTYRESULT$$$$")) { // once a couple returns empty, all the query will return empty
+                        return "-1";
+                    }
+                }
+            }
+            result = temp;
         }
-        // no match found
-        return "No match were found!\n";
+        return result;
+    }
+
+    /*
+    postings merge algorithm.
+     */
+    public static String and2Postings(String[] pl1, String[] pl2) {
+        int index1 = 0;
+        int index2 = 0;
+        String result = "";
+        while (index1 < pl1.length && index2 < pl2.length) {
+            int val1 = Integer.parseInt(pl1[index1]);
+            int val2 = Integer.parseInt(pl2[index2]);
+            if (val1 == val2) {
+                result += val1 + ",";
+                index1++;
+                index2++;
+            } else if (val1 > val2) {
+                index2++;
+            } else if (val2 > val1) {
+                index1++;
+            }
+        }
+        if (result.length() > 0) {
+            return result.substring(0, result.length() - 1); // post-fence
+        }
+        return "$$$$EMPTYRESULT$$$$";
     }
 }

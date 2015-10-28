@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dee54676-e83c-4d79-ade4-a91d8796fb45" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/Atakan_Arkan.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/informationretrieval1/Main.class" afterPath="$PROJECT_DIR$/out/production/informationretrieval1/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/informationretrieval1/Stemmer.class" afterPath="$PROJECT_DIR$/out/production/informationretrieval1/Stemmer.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/Atakan_Arkan.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/Atakan_Arkan.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="informationretrieval1.iws" />
@@ -39,15 +33,21 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.588907" vertical-offset="0" max-vertical-offset="1558">
-              <caret line="21" column="116" selection-start-line="21" selection-start-column="116" selection-end-line="21" selection-end-column="116" />
+            <state vertical-scroll-proportion="0.4730832" vertical-offset="660" max-vertical-offset="1273">
+              <caret line="167" column="46" selection-start-line="167" selection-start-column="46" selection-end-line="167" selection-end-column="46" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="docComment;class#Main#0" expanded="false" />
+                <element signature="e#184#192#0" expanded="true" />
+                <element signature="e#258#274#0" expanded="true" />
+                <element signature="e#341#358#0" expanded="true" />
                 <element signature="method#readStopwords#0;class#Main#0" expanded="false" />
                 <element signature="method#readArticles#0;class#Main#0" expanded="false" />
                 <element signature="method#tokenize#0;class#Main#0" expanded="false" />
+                <element signature="method#deleteStopWords#0;class#Main#0" expanded="false" />
                 <element signature="method#stemmed#0;class#Main#0" expanded="false" />
+                <element signature="method#processAnd#0;class#Main#0" expanded="false" />
+                <element signature="method#and2Postings#0;class#Main#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -473,12 +473,19 @@
       <workItem from="1445724375543" duration="1258000" />
       <workItem from="1445725699557" duration="6081000" />
       <workItem from="1445797302029" duration="1126000" />
-      <workItem from="1446043136317" duration="4275000" />
+      <workItem from="1446043136317" duration="10195000" />
     </task>
+    <task id="LOCAL-00001" summary="*">
+      <created>1446050141714</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1446050141714</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13681000" />
+    <option name="totallyTimeSpent" value="19601000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1874" height="1096" extended-state="6" />
@@ -487,7 +494,7 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3299595" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32891566" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32793522" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -529,10 +536,12 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <MESSAGE value="*" />
+    <option name="LAST_COMMIT_MESSAGE" value="*" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="3" />
+      <option name="time" value="5" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -548,10 +557,16 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#Main#0" expanded="false" />
+            <element signature="e#184#192#0" expanded="true" />
+            <element signature="e#258#274#0" expanded="true" />
+            <element signature="e#341#358#0" expanded="true" />
             <element signature="method#readStopwords#0;class#Main#0" expanded="false" />
             <element signature="method#readArticles#0;class#Main#0" expanded="false" />
             <element signature="method#tokenize#0;class#Main#0" expanded="false" />
+            <element signature="method#deleteStopWords#0;class#Main#0" expanded="false" />
             <element signature="method#stemmed#0;class#Main#0" expanded="false" />
+            <element signature="method#processAnd#0;class#Main#0" expanded="false" />
+            <element signature="method#and2Postings#0;class#Main#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -563,10 +578,16 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#Main#0" expanded="false" />
+            <element signature="e#184#192#0" expanded="true" />
+            <element signature="e#258#274#0" expanded="true" />
+            <element signature="e#341#358#0" expanded="true" />
             <element signature="method#readStopwords#0;class#Main#0" expanded="false" />
             <element signature="method#readArticles#0;class#Main#0" expanded="false" />
             <element signature="method#tokenize#0;class#Main#0" expanded="false" />
+            <element signature="method#deleteStopWords#0;class#Main#0" expanded="false" />
             <element signature="method#stemmed#0;class#Main#0" expanded="false" />
+            <element signature="method#processAnd#0;class#Main#0" expanded="false" />
+            <element signature="method#and2Postings#0;class#Main#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -602,10 +623,16 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#Main#0" expanded="false" />
+            <element signature="e#184#192#0" expanded="true" />
+            <element signature="e#258#274#0" expanded="true" />
+            <element signature="e#341#358#0" expanded="true" />
             <element signature="method#readStopwords#0;class#Main#0" expanded="false" />
             <element signature="method#readArticles#0;class#Main#0" expanded="false" />
             <element signature="method#tokenize#0;class#Main#0" expanded="false" />
+            <element signature="method#deleteStopWords#0;class#Main#0" expanded="false" />
             <element signature="method#stemmed#0;class#Main#0" expanded="false" />
+            <element signature="method#processAnd#0;class#Main#0" expanded="false" />
+            <element signature="method#and2Postings#0;class#Main#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -625,10 +652,16 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#Main#0" expanded="false" />
+            <element signature="e#184#192#0" expanded="true" />
+            <element signature="e#258#274#0" expanded="true" />
+            <element signature="e#341#358#0" expanded="true" />
             <element signature="method#readStopwords#0;class#Main#0" expanded="false" />
             <element signature="method#readArticles#0;class#Main#0" expanded="false" />
             <element signature="method#tokenize#0;class#Main#0" expanded="false" />
+            <element signature="method#deleteStopWords#0;class#Main#0" expanded="false" />
             <element signature="method#stemmed#0;class#Main#0" expanded="false" />
+            <element signature="method#processAnd#0;class#Main#0" expanded="false" />
+            <element signature="method#and2Postings#0;class#Main#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -648,10 +681,16 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#Main#0" expanded="false" />
+            <element signature="e#184#192#0" expanded="true" />
+            <element signature="e#258#274#0" expanded="true" />
+            <element signature="e#341#358#0" expanded="true" />
             <element signature="method#readStopwords#0;class#Main#0" expanded="false" />
             <element signature="method#readArticles#0;class#Main#0" expanded="false" />
             <element signature="method#tokenize#0;class#Main#0" expanded="false" />
+            <element signature="method#deleteStopWords#0;class#Main#0" expanded="false" />
             <element signature="method#stemmed#0;class#Main#0" expanded="false" />
+            <element signature="method#processAnd#0;class#Main#0" expanded="false" />
+            <element signature="method#and2Postings#0;class#Main#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -671,10 +710,16 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#Main#0" expanded="false" />
+            <element signature="e#184#192#0" expanded="true" />
+            <element signature="e#258#274#0" expanded="true" />
+            <element signature="e#341#358#0" expanded="true" />
             <element signature="method#readStopwords#0;class#Main#0" expanded="false" />
             <element signature="method#readArticles#0;class#Main#0" expanded="false" />
             <element signature="method#tokenize#0;class#Main#0" expanded="false" />
+            <element signature="method#deleteStopWords#0;class#Main#0" expanded="false" />
             <element signature="method#stemmed#0;class#Main#0" expanded="false" />
+            <element signature="method#processAnd#0;class#Main#0" expanded="false" />
+            <element signature="method#and2Postings#0;class#Main#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -711,17 +756,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_25/src.zip!/java/lang/NumberFormatException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.72683704" vertical-offset="248" max-vertical-offset="874">
+          <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.588907" vertical-offset="0" max-vertical-offset="1558">
-          <caret line="21" column="116" selection-start-line="21" selection-start-column="116" selection-end-line="21" selection-end-column="116" />
+        <state vertical-scroll-proportion="0.4730832" vertical-offset="660" max-vertical-offset="1273">
+          <caret line="167" column="46" selection-start-line="167" selection-start-column="46" selection-end-line="167" selection-end-column="46" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#Main#0" expanded="false" />
+            <element signature="e#184#192#0" expanded="true" />
+            <element signature="e#258#274#0" expanded="true" />
+            <element signature="e#341#358#0" expanded="true" />
             <element signature="method#readStopwords#0;class#Main#0" expanded="false" />
             <element signature="method#readArticles#0;class#Main#0" expanded="false" />
             <element signature="method#tokenize#0;class#Main#0" expanded="false" />
+            <element signature="method#deleteStopWords#0;class#Main#0" expanded="false" />
             <element signature="method#stemmed#0;class#Main#0" expanded="false" />
+            <element signature="method#processAnd#0;class#Main#0" expanded="false" />
+            <element signature="method#and2Postings#0;class#Main#0" expanded="false" />
           </folding>
         </state>
       </provider>
