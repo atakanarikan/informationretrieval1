@@ -10,38 +10,7 @@ public class Main {
     static HashMap<String, Integer> wordFrequency = new HashMap<String, Integer>();
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Hello, World!");
-        System.out.print("Processing the stopwords... ");
-        readStopwords();
-        System.out.println("Done!");
-        System.out.print("Processing the articles (This might take up to a minute)... ");
-        readArticles();
-        System.out.println("Done!");
-        Scanner scan = new Scanner(System.in);
-        String userQuery = "";
-        while(true){
-            System.out.println("Please enter your query(Enter \"q\" for terminating the program) : ");
-            userQuery = scan.nextLine();
-            if(userQuery.toLowerCase().equals("q")) {
-                break;
-            }
-            String queryType = "and"; // our default query is and
-            String[] query = userQuery.split(" ");
-            for(int i = 0; i < query.length; i++){
-                if(query[i].toLowerCase().equals("or")){
-                    queryType = "or";
-                    break;
-                }
-            }
-            if(queryType.equals("or")){
-                System.out.println("Matched articles: " + processOr(userQuery));
-            }
-            else {
-                System.out.println("Matched articles: " + processAnd(userQuery));
-            }
-        }
-        scan.close();
-        System.out.println("Goodbye, Cruel World!");
+        run();
     }
 
     /*
@@ -258,17 +227,18 @@ public class Main {
         String[] query = stemmed(deleteStopWords(tokenize(userQuery))).split(" "); // this will get rid of the OR's in the query
         String x = "";
         if(!correctQuery(userQuery)) { // an unknown word is in the query, just get rid of it from the query since it won't have any effect
+            System.out.println("UNKnOWN");
             for(int i= 0; i < query.length; i++) {
-                if(invertedIndex.get(query[i]) != null && invertedIndex.containsKey(query[i])){
+                if(invertedIndex.get(query[i]) != null){
                     x += query[i] + " ";
+                } else {
                 }
             }
+            query = x.split(" ");
         }
-        query = x.split(" ");
         String result;
-        int index = 0;
         if (query.length == 1) {
-            if (invertedIndex.get(query[index]) != null) return invertedIndex.get(query[index]); // only 1 word query
+            if (invertedIndex.get(query[0]) != null) return invertedIndex.get(query[0]); // only 1 word query
             return "None!";
         } else if (query.length == 2) {
             result = or2Postings(invertedIndex.get(query[0]).split(","), invertedIndex.get(query[1]).split(","));
@@ -311,5 +281,40 @@ public class Main {
             }
         }
         return true;
+    }
+
+    public static void run() throws IOException {
+        System.out.println("Hello, World!");
+        System.out.print("Processing the stopwords... ");
+        readStopwords();
+        System.out.println("Done!");
+        System.out.print("Processing the articles (This might take up to a minute)... ");
+        readArticles();
+        System.out.println("Done!");
+        Scanner scan = new Scanner(System.in);
+        String userQuery;
+        while(true){
+            System.out.println("Please enter your query(Enter \"q\" for terminating the program) : ");
+            userQuery = scan.nextLine();
+            if(userQuery.toLowerCase().equals("q")) {
+                scan.close();
+                System.out.println("Goodbye, Cruel World!");
+                System.exit(0);
+            }
+            String queryType = "and"; // our default query is and
+            String[] query = userQuery.split(" ");
+            for(int i = 0; i < query.length; i++){
+                if(query[i].toLowerCase().equals("or")){
+                    queryType = "or";
+                    break;
+                }
+            }
+            if(queryType.equals("or")){
+                System.out.println("Matched articles: " + processOr(userQuery));
+            }
+            else {
+                System.out.println("Matched articles: " + processAnd(userQuery));
+            }
+        }
     }
 }
