@@ -255,7 +255,9 @@ public class Main {
         }
         return result;
     }
-
+    /*
+    basicly takes intersection of two lists.
+     */
     public static String or2Postings(String[] pl1, String[] pl2) {
         TreeSet<Integer> mySet = new TreeSet<Integer>();
         String result = "";
@@ -273,6 +275,9 @@ public class Main {
         return "";
     }
 
+    /*
+    return false if any of the tokens in the query doesn't exist in the dictionary
+     */
     public static boolean correctQuery(String userQuery){
         String[] query = stemmed(deleteStopWords(tokenize(userQuery))).split(" ");
         for(int i = 0; i < query.length; i++) {
