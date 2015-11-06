@@ -1,1 +1,1 @@
-# informationretrieval1
+change the line 37 to the reuters folder, then the program should run without problems.

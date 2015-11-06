@@ -1,3 +1,6 @@
+import sun.reflect.generics.tree.Tree;
+
+import javax.xml.transform.Result;
 import java.io.*;
 import java.util.*;
 
@@ -31,7 +34,7 @@ public class Main {
     public static void readArticles() throws IOException {
         int index = 0;
         for (int i = 0; i < 22; i++) { //for each of the files
-            String filepath;
+            String filepath = ""; // give the path the the reuters folder, don't include the foldername.
             if (i < 10) filepath = "reuters21578/reut2-00" + i + ".sgm";
             else filepath = "reuters21578/reut2-0" + i + ".sgm";
             BufferedReader read = new BufferedReader(new FileReader(new File(filepath)));
